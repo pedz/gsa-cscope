@@ -125,9 +125,12 @@ The load should set `gsa-cscope-matches' which is then used to create
 				      (or gsa-cscope-obarray
 					  (progn
 					    (gsa-cscope-create-matches)
-					    gsa-cscope-obarray)))))
-  (unless (symbolp sym)
-    (setq sym (intern-soft sym gsa-cscope-obarray)))
+					    gsa-cscope-obarray)) nil t)))
+  (let ((old-sym sym))
+    (unless (symbolp sym)
+      (setq sym (intern-soft sym gsa-cscope-obarray)))
+    (unless sym
+      (error "%s is not a valid build level" old-sym)))
   (let* ((dir (file-name-as-directory (get sym 'full-path)))
 	 (parent (file-name-as-directory
 		  (file-name-directory
@@ -135,4 +138,5 @@ The load should set `gsa-cscope-matches' which is then used to create
 	 (cscope (concat parent "cscope/bin/cscope"))
 	 (options "-d -q -l")
 	 (database (concat parent "cscope/mono.db")))
-    (cscope-init-process cscope options dir database)))
+    (cscope-init-process cscope options dir database)
+    (switch-to-buffer (cscope-out-buffer-get))))
