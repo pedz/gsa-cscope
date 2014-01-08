@@ -65,7 +65,7 @@ The second matches files in the user's sandbox."
   :group 'gsa-cscope)
 
 (defcustom gsa-cscope-match-cache
-  (expand-file-name "~/.emacs.d/gsa_tree_cache.el")
+  (expand-file-name "~/.emacs.d/gsa_match_cache.el")
   "Path to an elisp file that is created and maintained by the
 `gsa-create-cscope-matches' command"
   :type 'string
@@ -110,6 +110,7 @@ The load should set `gsa-cscope-matches' which is then used to create
 (if (file-exists-p gsa-cscope-match-cache)
     (gsa-cscope-load-match-cache))
 
+;;;###autoload
 (defun gsa-cscope-start ( sym )
   (interactive (list (completing-read "Prompt: " gsa-cscope-obarray)))
   (unless (symbolp sym)
