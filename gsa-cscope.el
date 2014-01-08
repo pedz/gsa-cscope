@@ -130,8 +130,8 @@ The load should set `gsa-cscope-matches' which is then used to create
     (setq sym (intern-soft sym gsa-cscope-obarray)))
   (let* ((dir (file-name-as-directory (get sym 'full-path)))
 	 (parent (file-name-as-directory
-		  (directory-file-name
-		   (file-name-directory dir))))
+		  (file-name-directory
+		   (directory-file-name dir))))
 	 (cscope (concat parent "cscope/bin/cscope"))
 	 (options "-d -q -l")
 	 (database (concat parent "cscope/mono.db")))
