@@ -67,7 +67,7 @@ The second matches files in the user's sandbox."
 (defcustom gsa-pattern-list
   '( "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]00-[0-9][0-9]Gold"
      "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]00-[0-9][0-9]-[0-9][0-9]_SP"
-     "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]_COMPLETE" )
+     "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]?_COMPLETE" )
   "List of patterns for the backing trees"
   :type 'list
   :group 'gsa-cscope)
@@ -93,6 +93,7 @@ The second matches files in the user's sandbox."
 It then loads the file after creating it."
   (interactive)
   (let* ((file (find-file gsa-cscope-match-cache))
+	 (_dummy (message "Creating cache... this may take a half minute or more."))
 	 (the-list (apply 'append (mapcar 'file-expand-wildcards gsa-pattern-list))))
     (erase-buffer)
     (insert (format "(setq gsa-cscope-matches '%S)" the-list))
@@ -123,7 +124,6 @@ The load should set `gsa-cscope-matches' which is then used to create
   (interactive (list (completing-read "Prompt: " 
 				      (or gsa-cscope-obarray
 					  (progn
-					    (message "Creating cache... this may take a half minute or more.")
 					    (gsa-cscope-create-matches)
 					    gsa-cscope-obarray)))))
   (unless (symbolp sym)
