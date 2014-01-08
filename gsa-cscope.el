@@ -64,10 +64,18 @@ The second matches files in the user's sandbox."
   :type 'list
   :group 'gsa-cscope)
 
+(defcustom gsa-pattern-list
+  '( "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]00-[0-9][0-9]Gold"
+     "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]00-[0-9][0-9]-[0-9][0-9]_SP"
+     "/gsa/ausgsa/projects/a/aix/aix[0-9][0-9]?/[0-9][0-9]_COMPLETE" )
+  "List of patterns for the backing trees"
+  :type 'list
+  :group 'gsa-cscope)
+
 (defcustom gsa-cscope-match-cache
   (expand-file-name "~/.emacs.d/gsa_match_cache.el")
   "Path to an elisp file that is created and maintained by the
-`gsa-create-cscope-matches' command"
+`gsa-cscope-create-matches' command"
   :type 'string
   :group 'gsa-cscope)
 
@@ -76,11 +84,11 @@ The second matches files in the user's sandbox."
 
 (defun gsa-cscope-matches nil
   "The list of directories that match the patterns in `gsa-pattern-list'.
-`gsa-create-cscope-matches' is used to create and update
+`gsa-cscope-create-matches' is used to create and update
 `gsa-cscope-match-cache' which is an elisp file that sets the value to
   `gsa-cscope-matches'.")
 
-(defun gsa-create-cscope-matches ()
+(defun gsa-cscope-create-matches ()
   "Creates the file at `gsa-cscope-match-cache' which defines `gsa-cscope-matches'.
 It then loads the file after creating it."
   (interactive)
@@ -112,7 +120,12 @@ The load should set `gsa-cscope-matches' which is then used to create
 
 ;;;###autoload
 (defun gsa-cscope-start ( sym )
-  (interactive (list (completing-read "Prompt: " gsa-cscope-obarray)))
+  (interactive (list (completing-read "Prompt: " 
+				      (or gsa-cscope-obarray
+					  (progn
+					    (message "Creating cache... this may take a half minute or more.")
+					    (gsa-cscope-create-matches)
+					    gsa-cscope-obarray)))))
   (unless (symbolp sym)
     (setq sym (intern-soft sym gsa-cscope-obarray)))
   (let* ((dir (file-name-as-directory (get sym 'full-path)))
