@@ -35,8 +35,9 @@ Otherwise, ~/sandbox is used"
      (concat (match-string 1 default-directory) "cscope/mono.db"))   ; cscope database
 
    ;; Pattern to match files found in a sandbox
-   '((concat gsa-cscope-sandbox-path "[^/]+/")
-     (concat
+   (list
+    (concat gsa-cscope-sandbox-path "[^/]+/")
+    '(concat
       (file-name-as-directory			;add /
        (directory-file-name			;move up to parent
 	(file-name-directory			;remove any /
@@ -46,9 +47,9 @@ Otherwise, ~/sandbox is used"
 	    (match-string 0 default-directory)) ;path to sandbox
 	   "link")))))
       "cscope/bin/cscope")			;which cscope to use
-     "-d -q -l"					;options to pass to cscope
-     (match-string 0 default-directory)
-     (concat					;append cscope/mono.db
+    "-d -q -l"					;options to pass to cscope
+    '(match-string 0 default-directory)
+    '(concat					;append cscope/mono.db
       (file-name-as-directory			;add /
        (directory-file-name			;move up to parent
 	(file-name-directory			;remove any /
