@@ -40,15 +40,15 @@
 							rest)))))))
     ;; If we found something, we now need to set everything up right.
     (if found
-	(progn
-	  (kill-buffer (current-buffer))
-	  (let ((new-buf (get-file-buffer new-path)))
-	    (if new-buf
-		;; no need to verify last-modified time for this!
-		(set-buffer new-buf)
-	      (set-buffer (create-file-buffer new-path))
-	      (erase-buffer)
-	      (insert-file-contents new-path t)))
+	(let ((old-buf (current-buffer))
+	      (new-buf (get-file-buffer new-path)))
+	  (if new-buf
+	      ;; no need to verify last-modified time for this!
+	      (set-buffer new-buf)
+	    (set-buffer (create-file-buffer new-path))
+	    (erase-buffer)
+	    (insert-file-contents new-path t))
+	  (kill-buffer old-buf)
 	  t)
       nil)))
 
