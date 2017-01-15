@@ -80,9 +80,6 @@ The second matches files in the user's sandbox."
   :type 'string
   :group 'gsa-cscope)
 
-;; Prepend the GSA patters since they should be more specific.
-(setq cscope-dir-patterns (append gsa-cscope-dir-patterns cscope-dir-patterns))
-
 (defun gsa-cscope-matches nil
   "The list of directories that match the patterns in `gsa-pattern-list'.
 `gsa-cscope-create-matches' is used to create and update
@@ -121,7 +118,11 @@ The load should set `gsa-cscope-matches' which is then used to create
     (gsa-cscope-load-match-cache))
 
 ;;;###autoload
+;; Prepend the GSA patters since they should be more specific.
+(setq cscope-dir-patterns (append gsa-cscope-dir-patterns cscope-dir-patterns))
+
 (defun gsa-cscope-start ( sym )
+  "Start a cscope based upon a GSA backing tree"
   (interactive (list (completing-read "Prompt: " 
 				      (or gsa-cscope-obarray
 					  (progn
@@ -141,3 +142,5 @@ The load should set `gsa-cscope-matches' which is then used to create
 	 (database (concat parent "cscope/mono.db")))
     (cscope-init-process cscope options dir database)
     (switch-to-buffer (cscope-out-buffer-get))))
+
+(provide 'gsa-cscope)
